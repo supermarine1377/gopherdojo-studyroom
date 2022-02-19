@@ -45,6 +45,14 @@ var testcases = []testcase{
 			nil,
 		},
 	},
+	{
+		"three arguments",
+		[]string{"./main", "images", "webp", "hoge"},
+		out{
+			types.Context{DirName: "images", Extension: "webp"},
+			nil,
+		},
+	},
 }
 
 func TestHandleArgs(t *testing.T) {
