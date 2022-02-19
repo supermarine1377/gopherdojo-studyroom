@@ -52,9 +52,11 @@ func TestHandleArgs(t *testing.T) {
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Logf("test name: %s", tc.name)
-			t.Logf(tc.out.result.Extension)
-			result, _ := processes.HandleArgs(tc.in)
+			result, err := processes.HandleArgs(tc.in)
 			asserts.Equal(tc.out.result, result)
+			if err != nil {
+				asserts.EqualError(tc.out.err, err.Error())
+			}
 		})
 	}
 }
