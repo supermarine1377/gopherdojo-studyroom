@@ -12,18 +12,15 @@ func HandleArgs(args []string) (types.Context, error) {
 		return context, err
 	}
 	if len(args) == 2 {
-		dirName := args[1]
-		if dirName == "" {
+		if args[1] == "" {
 			err := errors.New("dir name is empty string")
 			return context, err
 		}
-		context.DirName = dirName
+		context.DirName = args[1]
 		context.Extension = "png"
 		return context, nil
 	}
-	dirName := args[1]
-	extension := args[2]
-	context.DirName = dirName
-	context.Extension = extension
+	context.DirName = args[1]
+	context.Extension = args[2]
 	return context, nil
 }
