@@ -2,13 +2,18 @@ package processes
 
 import (
 	"io/fs"
+	"io/ioutil"
 	"path/filepath"
 	"regexp"
 	"supermarine1377/types"
 )
 
 // implements getting image as a slice of Myimage (see types package).
-func GetImages(dirName string) ([]types.Myimage, error) {
+func GetImages(context types.Context) ([]types.Myimage, error) {
+	dirName := context.DirName
+	if _, err := ioutil.ReadDir(dirName); err != nil {
+		return nil, err
+	}
 	var images []types.Myimage
 	err := filepath.WalkDir(dirName, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {

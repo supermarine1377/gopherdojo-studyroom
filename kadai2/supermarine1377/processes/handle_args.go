@@ -5,6 +5,7 @@ import (
 	"supermarine1377/types"
 )
 
+// Handle arguments passed when user excuses ./main
 func HandleArgs(args []string) (types.Context, error) {
 	var context types.Context
 	if len(args) == 1 {

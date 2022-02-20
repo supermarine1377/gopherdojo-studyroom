@@ -19,7 +19,6 @@ Example
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"supermarine1377/processes"
@@ -28,21 +27,15 @@ import (
 func main() {
 	context, err := processes.HandleArgs(os.Args)
 	if err != nil {
-		log.Println("no arguments passed, exiting...")
+		log.Println(err)
 		os.Exit(1)
 	}
-	dirName := context.DirName
-	extension := context.Extension
-	if _, err := ioutil.ReadDir(dirName); err != nil {
-		log.Printf("no dir %s found, exiting...", dirName)
-		os.Exit(1)
-	}
-	images, err := processes.GetImages(dirName)
+	images, err := processes.GetImages(context)
 	if err != nil {
-		log.Println("error occured during reading images", err)
+		log.Println(err)
 	}
 	for _, image := range images {
-		if err := processes.Convert(image, extension); err != nil {
+		if err := processes.Convert(image, context.Extension); err != nil {
 			log.Println(err)
 		}
 		log.Printf("finished converting %s", image.FileName)
