@@ -1,22 +1,71 @@
-// Package processes implements converting JPG image.
-package processes
+package types
 
 import (
 	"errors"
+	"fmt"
 	"image"
 	"image/jpeg"
+	"io/fs"
 	"log"
 	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
-	"supermarine1377/types"
+	"supermarine1377/myio"
 )
 
+type RealDirectory struct {
+	Name string
+}
+
+func (rd RealDirectory) Read() ([]myio.Myimage, error) {
+	var images []myio.Myimage
+	err := filepath.WalkDir(rd.Name, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		var image myio.Myimage
+		name := d.Name()
+
+		match, err := regexp.MatchString("..+jpg", name)
+		if err != nil {
+			return err
+		}
+		if !match {
+			return nil
+		}
+		image.FileName = name
+		image.Path = path
+		image.Extension = "jpg"
+
+		images = append(images, image)
+
+		return nil
+	})
+
+	return images, err
+}
+
+func (rd RealDirectory) Write(mi []myio.Myimage, context myio.Context) error {
+	for _, image := range mi {
+		if err := convert(image, context.Extension); err != nil {
+			log.Println(err)
+			return err
+		}
+		log.Printf("finished converting %s", image.FileName)
+	}
+	return nil
+}
+
 // convert a Myimage (see types package) passed as a argumaent.
-func Convert(arg types.Myimage, extension string) error {
+func convert(arg myio.Myimage, extension string) error {
 	log.Printf("started to convert %s to %s", arg.FileName, extension)
 
 	if arg.Extension != "jpg" {
-		err := errors.New(arg.FileName + "is not .jpg")
+		err := fmt.Errorf("%s is not .jpg", arg.FileName)
 		return err
 	}
 	reader, err := myopen(arg.FileName, arg.Path)

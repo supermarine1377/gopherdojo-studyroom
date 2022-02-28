@@ -21,6 +21,7 @@ package main
 import (
 	"log"
 	"os"
+	"supermarine1377/myio"
 	"supermarine1377/processes"
 )
 
@@ -30,14 +31,16 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
-	images, err := processes.GetImages(context)
+	rw, err := processes.GetDirectory(context)
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	images, err := myio.Read(rw)
 	if err != nil {
 		log.Println(err)
 	}
-	for _, image := range images {
-		if err := processes.Convert(image, context.Extension); err != nil {
-			log.Println(err)
-		}
-		log.Printf("finished converting %s", image.FileName)
+	if err := myio.Write(rw, images, context); err != nil {
+		log.Println(err)
 	}
 }

@@ -2,18 +2,18 @@ package processes
 
 import (
 	"errors"
-	"supermarine1377/types"
+	"supermarine1377/myio"
 )
 
 // Handle arguments passed when user excuses ./main
-func HandleArgs(args []string) (types.Context, error) {
-	var context types.Context
+func HandleArgs(args []string) (myio.Context, error) {
+	var context myio.Context
 	if len(args) == 1 {
 		err := errors.New("no arguments passed")
 		return context, err
 	}
 	if len(args) == 2 {
-		if args[1] == "" {
+		if args[1] == "" || args[1] == " " {
 			err := errors.New("dir name is empty string")
 			return context, err
 		}
