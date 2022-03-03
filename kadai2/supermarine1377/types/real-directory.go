@@ -20,6 +20,7 @@ type RealDirectory struct {
 
 func (rd RealDirectory) Read() ([]myio.Myimage, error) {
 	var images []myio.Myimage
+	var dirEntries []fs.DirEntry
 	err := filepath.WalkDir(rd.Name, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -27,22 +28,12 @@ func (rd RealDirectory) Read() ([]myio.Myimage, error) {
 		if d.IsDir() {
 			return nil
 		}
-		var image myio.Myimage
-		name := d.Name()
-
-		match, err := regexp.MatchString("..+jpg", name)
+		dirEntries = append(dirEntries, d)
+		image, err := getImage(d, path)
 		if err != nil {
 			return err
 		}
-		if !match {
-			return nil
-		}
-		image.FileName = name
-		image.Path = path
-		image.Extension = "jpg"
-
 		images = append(images, image)
-
 		return nil
 	})
 
@@ -58,6 +49,23 @@ func (rd RealDirectory) Write(mi []myio.Myimage, context myio.Context) error {
 		log.Printf("finished converting %s", image.FileName)
 	}
 	return nil
+}
+
+func getImage(d fs.DirEntry, path string) (myio.Myimage, error) {
+	var image myio.Myimage
+	name := d.Name()
+	match, err := regexp.MatchString("..+jpg", name)
+	if err != nil {
+		return image, err
+	}
+	if match {
+		image = myio.Myimage{
+			FileName:  name,
+			Path:      path,
+			Extension: "jpg",
+		}
+	}
+	return image, nil
 }
 
 // convert a Myimage (see types package) passed as a argumaent.
