@@ -40,7 +40,7 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
-	if err := myio.Write(rw, images, context); err != nil {
+	if err := myio.Write(rw, images, *context); err != nil {
 		log.Println(err)
 	}
 }

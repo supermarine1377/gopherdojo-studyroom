@@ -14,7 +14,7 @@ func TestHandleArgs(t *testing.T) {
 		name string
 		in   []string
 		out  struct {
-			result myio.Context
+			result *myio.Context
 			err    error
 		}
 	}{
@@ -22,10 +22,10 @@ func TestHandleArgs(t *testing.T) {
 			"zero arguments",
 			[]string{"./main"},
 			struct {
-				result myio.Context
+				result *myio.Context
 				err    error
 			}{
-				myio.Context{DirName: "", Extension: ""},
+				nil,
 				errors.New("no arguments passed"),
 			},
 		},
@@ -33,10 +33,10 @@ func TestHandleArgs(t *testing.T) {
 			"one argument",
 			[]string{"./main", "images"},
 			struct {
-				result myio.Context
+				result *myio.Context
 				err    error
 			}{
-				myio.Context{DirName: "images", Extension: "png"},
+				&myio.Context{DirName: "images", Extension: "png"},
 				nil,
 			},
 		},
@@ -44,10 +44,10 @@ func TestHandleArgs(t *testing.T) {
 			"two arguments",
 			[]string{"./main", "images", "webp"},
 			struct {
-				result myio.Context
+				result *myio.Context
 				err    error
 			}{
-				myio.Context{DirName: "images", Extension: "webp"},
+				&myio.Context{DirName: "images", Extension: "webp"},
 				nil,
 			},
 		},
@@ -55,10 +55,10 @@ func TestHandleArgs(t *testing.T) {
 			"three arguments",
 			[]string{"./main", "images", "webp", "hoge"},
 			struct {
-				result myio.Context
+				result *myio.Context
 				err    error
 			}{
-				myio.Context{DirName: "images", Extension: "webp"},
+				&myio.Context{DirName: "images", Extension: "webp"},
 				nil,
 			},
 		},
@@ -66,10 +66,10 @@ func TestHandleArgs(t *testing.T) {
 			"include invalid argument",
 			[]string{"./main", " "},
 			struct {
-				result myio.Context
+				result *myio.Context
 				err    error
 			}{
-				myio.Context{DirName: "", Extension: ""},
+				nil,
 				errors.New("dir name is empty string"),
 			},
 		},

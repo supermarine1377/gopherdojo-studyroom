@@ -12,7 +12,7 @@ import (
 func TestGetDirectory(t *testing.T) {
 	var testcases = []struct {
 		name string
-		in   myio.Context
+		in   *myio.Context
 		out  struct {
 			types.RealDirectory
 			error
@@ -20,7 +20,7 @@ func TestGetDirectory(t *testing.T) {
 	}{
 		{
 			"1st",
-			myio.Context{DirName: "../images", Extension: "png"},
+			&myio.Context{DirName: "../images", Extension: "png"},
 			struct {
 				types.RealDirectory
 				error
